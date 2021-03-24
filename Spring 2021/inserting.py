@@ -1,10 +1,12 @@
-from typing import Any, Tuple
+#importing python-mysql connector and mysql login information
+#I kept my login info hidden, but it is in a .ini file
 
+from typing import Any, Tuple
 from mysql.connector import MySQLConnection, Error
 from python_mysql_dbconfig import read_db_config
 import billboard_copy
 
-
+#This block contains the query to execute and takes in song info from the billboard api
 def insert_data(title, artist, position, year):
     query = "INSERT INTO songs(title, artist, position, year) " \
             "VALUES(%s, %s, %s, %s);"
@@ -33,7 +35,8 @@ def insert_data(title, artist, position, year):
 
 
 def main():
-    # inc = 1
+    """There were some songs removed from the list, so 2 years of the hot 100 only had 99 songs. That's what I'm handling here.
+        Also, there were some song titles and artists listed that were too long, so I had to change that as well."""
     for y in range(2006, 2021):
         chart = billboard_copy.ChartData('hot-100-songs', year=y)
         pos = 1
@@ -56,15 +59,6 @@ def main():
                           'Ty Dolla $ign + X Ambassadors'
             insert_data(song.title, art_new, pos, y)
             pos += 1
-
-    """chart = billboard_copy.ChartData('hot-100-songs', year=2016)
-    song = chart[67]
-    art = song.artist.replace('Featuring', '+')
-    art = art.replace(' &', ',')
-    art = art.replace('Feat.', '+')
-    art = art.replace('With', 'w/')
-    print(song)"""
-
 
 if __name__ == '__main__':
     main()
